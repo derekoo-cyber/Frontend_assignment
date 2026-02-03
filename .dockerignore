@@ -1,0 +1,25 @@
+# General
+.git
+.gitignore
+.dockerignore
+*.md
+
+# Backend
+backend/venv
+backend/__pycache__
+backend/*.pyc
+backend/*.pyo
+backend/*.pyd
+
+# Frontend - Dependencies
+frontend/node_modules
+frontend/.npm
+frontend/.yarn
+
+# Frontend - Build Output
+frontend/dist
+frontend/build
+
+# IDE Settings
+.vscode
+.idea
