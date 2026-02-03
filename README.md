@@ -72,23 +72,4 @@ The easiest way to run the application is using Docker.
 
 ## 🚀 Production Scaling Strategy
 
-To transition this application from a local development startups to a production-ready system capable of handling high traffic, the following roadmap will be implemented:
-
-### Database Evolution
-- **Migration**: Migrate from SQLite to **PostgreSQL** (Managed Instance like AWS RDS).
-- **Optimization**: Implement **B-Tree indexing** on critical columns (`user_id`, `email`) to ensure sub-millisecond query performance as the user base grows.
-
-### Orchestration & Deployment
-- **Containerization**: Usage of Docker is already implemented.
-- **Orchestration**: Deploy to **Kubernetes (K8s)** to manage container lifecycles.
-- **Scaling**: Enable **Horizontal Pod Autoscaling (HPA)** to automatically spin up more backend pods during traffic spikes.
-
-### Performance & Caching
-- **Caching Layer**: Introduce **Redis** to cache frequently accessed data (e.g., user sessions, popular notes) reducing direct database hits.
-- **CDN**: Distribute frontend assets (JS/CSS/Images) via a global CDN (e.g., Cloudflare, AWS CloudFront) to minimize latency for users worldwide.
-- **Load Balancing**: Use a Load Balancer (AWS ALB / Nginx) for efficient request distribution and SSL termination.
-
-### Security Hardening
-- **Secrets Management**: Move sensitive keys (JWT secrets, DB credentials) out of `.env` files and into a dedicated secrets manager like **AWS Secrets Manager** or **HashiCorp Vault**.
-- **Network Security**: Implement strict CORS policies whitelisting only production domains.
-- **SSL/TLS**: Enforce HTTPS for all communication.
+To transition to a production-ready system, we will migrate from SQLite to **PostgreSQL** with B-Tree indexing for performance. Deployment will be managed via **Kubernetes** with **Horizontal Pod Autoscaling (HPA)** to handle traffic spikes. We will introduce **Redis** for caching and a global **CDN** to minimize latency. **AWS ALB** will handle load balancing and SSL termination, while security will be enhanced by moving secrets to **AWS Secrets Manager**, enforcing strict CORS, and ensuring full HTTPS compliance.
