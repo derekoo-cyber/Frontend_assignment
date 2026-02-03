@@ -24,97 +24,71 @@ A full-stack application built with **React (Vite)** and **FastAPI**. This appli
 ### Prerequisites
 - Node.js (v18+ recommended)
 - Python 3.10+
+- Docker & Docker Compose (Recommended)
 
-### 1. Backend Setup
+### 1. Docker Setup (Recommended)
+The easiest way to run the application is using Docker.
 
+1. Ensure Docker Desktop is running.
+2. Run the following command in the root directory:
+   ```bash
+   docker-compose up --build
+   ```
+3. Access the app:
+   - Frontend: `http://localhost:5173`
+   - Backend API Docs: `http://localhost:8000/docs`
+
+### 2. Manual Setup
+
+#### Backend
 1. Navigate to the backend directory:
    ```bash
-   cd backend/venv
+   cd backend
    ```
-
-2. (Optional) Create and activate a virtual environment if not already active:
+2. Create virtual environment and install dependencies:
    ```bash
    python -m venv venv
-   # Windows
-   .\venv\Scripts\activate
-   # Mac/Linux
-   source venv/bin/activate
+   # Windows: .\venv\Scripts\activate
+   # Mac/Linux: source venv/bin/activate
+   pip install -r requirements.txt
    ```
-
-3. Install dependencies:
+3. Run the server:
    ```bash
-   pip install fastapi uvicorn sqlalchemy python-jose[cryptography] passlib[bcrypt] python-multipart
+   uvicorn main:app --reload
    ```
 
-4. **Environment Variables**:
-   > [!IMPORTANT]
-   > The `.env` file containing sensitive environment variables (like `SUPER_SECRET_KEY`) has been **gitignored** for security reasons. You must create one locally.
-
-   - Create a file named `.env` in `backend/venv/`.
-   - Add the following content:
-     ```env
-     SECRET_KEY=your_generated_secret_key_here
-     ```
-   - **How to generate a secure key**:
-     Run this Python command in your terminal to generate a random 32-character string:
-     ```bash
-     python -c "import secrets; print(secrets.token_hex(32))"
-     ```
-     Copy the output and paste it as your `SECRET_KEY`.
-
-   - The database URL defaults to `sqlite:///./app.db` in `database.py`.
-
-5. **Initialize Database**:
-   The database tables are automatically created when you start the application for the first time.
-
-### 2. Frontend Setup
-
-1. Navigate to the frontend directory:
+#### Frontend
+1. Navigate to frontend:
    ```bash
    cd frontend
    ```
-
-2. Install dependencies:
+2. Install & Run:
    ```bash
    npm install
-   ```
-
-3. **Check API URL**:
-   Ensure `src/api/axios.js` points to your running backend:
-   ```javascript
-   baseURL: 'http://127.0.0.1:8000/api/v1',
+   npm run dev
    ```
 
 ---
 
-## 🏃‍♂️ Running the Application
+## 🚀 Production Scaling Strategy
 
-### Start the Backend
-From the `backend/venv` directory, run:
-```bash
-python -m uvicorn main:app --reload
-```
-The server will start at `http://127.0.0.1:8000`.
-- API Docs: `http://127.0.0.1:8000/docs`
+To transition this application from a local development startups to a production-ready system capable of handling high traffic, the following roadmap will be implemented:
 
-### Start the Frontend
-From the `frontend` directory, run:
-```bash
-npm run dev
-```
-The app will be accessible at `http://localhost:5173`.
+### Database Evolution
+- **Migration**: Migrate from SQLite to **PostgreSQL** (Managed Instance like AWS RDS).
+- **Optimization**: Implement **B-Tree indexing** on critical columns (`user_id`, `email`) to ensure sub-millisecond query performance as the user base grows.
 
----
+### Orchestration & Deployment
+- **Containerization**: Usage of Docker is already implemented.
+- **Orchestration**: Deploy to **Kubernetes (K8s)** to manage container lifecycles.
+- **Scaling**: Enable **Horizontal Pod Autoscaling (HPA)** to automatically spin up more backend pods during traffic spikes.
 
-## 🔑 Demo Credentials
+### Performance & Caching
+- **Caching Layer**: Introduce **Redis** to cache frequently accessed data (e.g., user sessions, popular notes) reducing direct database hits.
+- **CDN**: Distribute frontend assets (JS/CSS/Images) via a global CDN (e.g., Cloudflare, AWS CloudFront) to minimize latency for users worldwide.
+- **Load Balancing**: Use a Load Balancer (AWS ALB / Nginx) for efficient request distribution and SSL termination.
 
-Since this is a local setup, you can register a new user or use the following if you have seeded the DB (Note: Data is local to your machine):
-
-1. **Register** a new account at `/signup`.
-2. **Login** with your new credentials at `/login`.
-
-**Example Flow:**
-1. Go to Signup.
-2. Email: `test@example.com`
-3. Password: `password123`
-4. Login to access the Dashboard.
+### Security Hardening
+- **Secrets Management**: Move sensitive keys (JWT secrets, DB credentials) out of `.env` files and into a dedicated secrets manager like **AWS Secrets Manager** or **HashiCorp Vault**.
+- **Network Security**: Implement strict CORS policies whitelisting only production domains.
+- **SSL/TLS**: Enforce HTTPS for all communication.
